@@ -1,0 +1,36 @@
+from queue import PriorityQueue
+
+def a_star(graph, h, start, goal):
+    open_list = PriorityQueue()
+    open_list.put((0 + h[start], 0, start, [start]))
+    visited = set()
+
+    while not open_list.empty():
+        _, cost, node, path = open_list.get()
+
+        if node == goal:
+            return path
+
+        if node in visited:
+            continue
+        visited.add(node)
+
+        for neighbor, weight in graph[node]:
+            if neighbor not in visited:
+                total_cost = cost + weight
+                open_list.put((total_cost + h[neighbor], total_cost, neighbor, path + [neighbor]))
+
+    return []
+
+graph = {
+    'A': [('B', 1), ('C', 4)],
+    'B': [('D', 2), ('E', 5)],
+    'C': [('F', 3)],
+    'D': [],
+    'E': [('G', 2)],
+    'F': [('G', 1)],
+    'G': []
+}
+h = {'A': 7, 'B': 6, 'C': 5, 'D': 4, 'E': 2, 'F': 1, 'G': 0}
+
+print("Path found:", a_star(graph, h, 'A', 'G'))
